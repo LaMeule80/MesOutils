@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Outils", "Outils\Outils.csproj", "{9266FBD3-3594-44FA-A1CF-E4E5DC105CFF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OutilsBlazor", "OutilsBlazor\OutilsBlazor.csproj", "{3FC9A16C-8547-4C3D-B463-1E3F24423B93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9266FBD3-3594-44FA-A1CF-E4E5DC105CFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9266FBD3-3594-44FA-A1CF-E4E5DC105CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9266FBD3-3594-44FA-A1CF-E4E5DC105CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9266FBD3-3594-44FA-A1CF-E4E5DC105CFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC9A16C-8547-4C3D-B463-1E3F24423B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC9A16C-8547-4C3D-B463-1E3F24423B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC9A16C-8547-4C3D-B463-1E3F24423B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC9A16C-8547-4C3D-B463-1E3F24423B93}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54B41665-9052-44C5-8EAE-ACBBA3C2A6EB}
+	EndGlobalSection
+EndGlobal
