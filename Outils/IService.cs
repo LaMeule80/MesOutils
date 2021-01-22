@@ -11,14 +11,12 @@ namespace Outils
 
         void Information(string message);
 
-        bool AskQuestion(string message);
+        void OuvrirLien(string lien);
 
-        void ShowException(Exception exception);
-
-        void OuvrirLienInterne(string lien);
-        
-        void OuvrirLienExterne(string lien);
+        bool AskQuestion(string nom);
 
         ObjectResult ObjectResult { get; }
+
+        void Show(ObjectResult objectResult);
     }
 }

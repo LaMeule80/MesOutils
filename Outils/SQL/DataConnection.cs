@@ -7,6 +7,66 @@ using Outils.ObjectResultData;
 
 namespace Outils.SQL
 {
+    public abstract class DataConnection<TValue, Vue, Repo> : DataConnection<TValue, Vue>
+        where TValue : class
+        where Vue : View
+        where Repo : ProcStoBase<TValue>
+    {
+        private readonly ProcStoBase<TValue> _repo;
+
+        public DataConnection(IService afficher, Vue view, Func<AccessReaderResult, TValue> factory)
+            : base(afficher, view, factory) 
+        {
+            _repo = (ProcStoBase<TValue>)Activator.CreateInstance(typeof(Repo), Afficher);
+        }
+
+        public ObjectResult Save(TValue value)
+        {
+            return _repo.ExecuteNonQuery(value, TypeEnregistrement.Ajout);
+        }
+
+        public ObjectResult Update(TValue value)
+        {
+            return _repo.ExecuteNonQuery(value, TypeEnregistrement.Modifie);
+        }
+
+        public ObjectResult Delete(TValue value)
+        {
+            return _repo.ExecuteNonQuery(value, TypeEnregistrement.Suppression);
+        }
+    }
+
+    public abstract class DataConnection<TValue, Vue> : DataConnection
+        where TValue : class
+        where Vue : View
+    {
+        private View _view { get; }
+        private Func<AccessReaderResult, TValue> _factory { get; }
+
+        public DataConnection(IService afficher, View view, Func<AccessReaderResult, TValue> factory)
+            : base(afficher)
+        {
+            _view = view;
+            _factory = factory;
+        }
+
+        public List<TValue> LireValues(ParametresSql parametres = null)
+        {
+            string requete = CreeClauseSelect(_view);
+            if (parametres != null)
+                requete += parametres.Clause;
+            return LireValues(_factory, requete, parametres);
+        }
+
+        public TValue LireValue(ParametresSql parametres = null)
+        {
+            string requete = CreeClauseSelect(_view);
+            if (parametres != null)
+                requete += parametres.Clause;
+            return LireValue(_factory, requete, parametres);
+        }
+    }
+
     public class DataConnection<TValue> : DataConnection
     {
         public DataConnection(IService afficher) : base(afficher)
@@ -22,14 +82,6 @@ namespace Outils.SQL
 
         public static List<TValue> LireValues(
             Func<AccessReaderResult, TValue> factory,
-            View table,
-            ParametresSql parametres = null)
-        {
-            return LireValues<TValue>(factory, table, parametres);
-        }
-
-        public static List<TValue> LireValues(
-            Func<AccessReaderResult, TValue> factory,
             string commandText,
             ParametresSql parameters = null)
         {
@@ -41,14 +93,6 @@ namespace Outils.SQL
             string fieldKey)
         {
             return LireValue<TValue>(commandText, fieldKey);
-        }
-
-        public static TValue LireValue(
-            Func<AccessReaderResult, TValue> factory,
-            View table,
-            ParametresSql parametres)
-        {
-            return LireValue<TValue>(factory, table, parametres);
         }
     }
 
@@ -123,7 +167,7 @@ namespace Outils.SQL
                     }
                 }
             }
-            
+
             return result.IsSuccess ? result.Value.ToList() : null;
         }
 

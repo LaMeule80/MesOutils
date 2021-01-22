@@ -1,6 +1,6 @@
 using System;
 
-namespace ApplicationActrice
+namespace Outils.Controls
 {
     public interface IBaseId
     {

@@ -45,21 +45,6 @@ namespace Outils.SQL
             return (T)_reader[champ];
         }
 
-        public BitmapImage GetBitmapImage(FieldViewDescription champ)
-        {
-            var bitmap = new BitmapImage();
-            var tableau = GetValue<byte[]>(champ.Name);
-            if (tableau != null && tableau.Length != 0)
-                using (var memoryStream = new MemoryStream(tableau))
-                {
-                    bitmap.BeginInit();
-                    bitmap.StreamSource = memoryStream;
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.EndInit();
-                }
-            return bitmap;
-        }
-
         protected override void DisposeManagedResources()
         {
             _reader?.Dispose();

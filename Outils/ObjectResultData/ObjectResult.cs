@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Text;
+using Outils.Helper.EnumTools;
 
 namespace Outils.ObjectResultData
 {
@@ -22,15 +23,7 @@ namespace Outils.ObjectResultData
 
     public class ObjectResult : List<ObjectResultItem>
     {
-        public bool IsSuccess
-        {
-            get
-            {
-                if (!this.Any())
-                    return true;
-                return this.Count(x => x.Niveau == Level.Erreur) <= 0;
-            }
-        }
+        public bool IsSuccess => !this.Any();
 
         public string Message
         {
@@ -38,96 +31,79 @@ namespace Outils.ObjectResultData
             {
                 if (this.Count == 0)
                     return string.Empty;
-                
-                var stringBuilder = new StringBuilder();
-                var erreurs = this.Where(x => x.Niveau == Level.Erreur);
-                if (erreurs.Any())
-                {
-                    stringBuilder.Append("Une ou plusieurs erreurs ont été levées : ").Append(Environment.NewLine);
-                    foreach (var item in erreurs)
-                        stringBuilder.Append(item.Message).Append(Environment.NewLine);
-                }
 
-                var warning = this.Where(x => x.Niveau == Level.Attention);
-                if (warning.Any())
-                {
-                    stringBuilder.Append("Un ou plusieurs warnings ont été levées : ").Append(Environment.NewLine);
-                    foreach (var item in warning)
-                        stringBuilder.Append(item).Append(Environment.NewLine);
-                }
+                List<string> result = new List<string>();
 
-                var infos = this.Where(x => x.Niveau == Level.Information);
-                if (infos.Any())
-                {
-                    stringBuilder.Append("Un ou plusieurs informations² ont été levées : ").Append(Environment.NewLine);
-                    foreach (var item in infos)
-                        stringBuilder.Append(item).Append(Environment.NewLine);
-                }
+                var erreurs = CreerMessage(Level.Erreur);
+                if (!string.IsNullOrEmpty(erreurs))
+                    result.Add(erreurs);
 
-                return stringBuilder.ToString();
+                var warnings = CreerMessage(Level.Attention);
+                if (!string.IsNullOrEmpty(warnings))
+                    result.Add(warnings);
+
+                var infos = CreerMessage(Level.Information);
+                if (!string.IsNullOrEmpty(infos))
+                    result.Add(infos);
+
+                return string.Join(Environment.NewLine, result);
             }
+        }
+
+        private string CreerMessage(Level level)
+        {
+            var items = this.Where(x => x.Niveau == level).ToList();
+            if (!items.Any())
+                return string.Empty;
+            List<string> result = new List<string>
+            {
+                $"Une ou plusieurs {EnumHelper.GetValue<string>(level)} ont été levées : "
+            };
+            foreach (var item in items)
+                result.Add($"- {item.Message}");
+            return string.Join(Environment.NewLine, result);
+        }
+
+        private void Add(string message, Level level)
+        {
+            Add(new ObjectResultItem() { Message = message, Niveau = level});
         }
 
         public void AddError(string message)
         {
-            Add(new ObjectResultItem() { Message = message, Niveau = Level.Erreur });
+            Add(message, Level.Erreur);
         }
 
         public void AddWarning(string message)
         {
-            Add(new ObjectResultItem() { Message = message, Niveau = Level.Attention });
+            Add(message, Level.Attention);
         }
 
         public void AddInformation(string message)
         {
-            Add(new ObjectResultItem() { Message = message, Niveau = Level.Information });
+            Add(message, Level.Information);
         }
 
-        public void AddError(Exception exception)
+        public void AddSqlException(SqlException sqlException)
         {
-            var stackTrace = new StackTrace();
-            var method = stackTrace.GetFrame(2).GetMethod();
-            var stringBuilder = new StringBuilder(string.Format(CultureInfo.CurrentCulture,
-                "{0}.{1} : Une erreur SQL a été levée.", new object[]
-                {
-                    method.ReflectedType?.Name,
-                    method.Name
-                }));
-            stringBuilder.Append(Environment.NewLine);
-            stringBuilder.Append("Informations complémentaires :");
-            stringBuilder.Append(Environment.NewLine);
-            stringBuilder.Append(exception.Message);
-            AddError(stringBuilder.ToString());
+            if (sqlException.Class <= 16)
+                AddInformation(sqlException.Message);
+            else
+            {
+                var stackTrace = new StackTrace();
+                var method = stackTrace.GetFrame(2).GetMethod();
+                var stringBuilder = new StringBuilder($"{method.ReflectedType?.Name}.{method.Name} : Une erreur SQL a été levée.");
+                stringBuilder.Append(Environment.NewLine);
+                stringBuilder.Append("Informations complémentaires :");
+                stringBuilder.Append(Environment.NewLine);
+                stringBuilder.Append(sqlException.Message);
+                AddError(stringBuilder.ToString());
+            }
         }
 
         public void Merge(ObjectResult objectResult)
         {
             AddRange(objectResult);
         }
-    }
-
-    public class ObjectResultItem
-    {
-        public ObjectResultItem()
-        {
-            
-        }
-
-        public ObjectResultItem(string message, Level niveau)
-        {
-            Message = message;
-            Niveau = niveau;
-        }
-
-        public string Message { get; set; }
-
-        public Level Niveau { get; set; }
-    }
-
-    public enum Level
-    {
-        Erreur,
-        Attention,
-        Information
     }
 }

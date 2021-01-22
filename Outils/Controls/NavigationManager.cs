@@ -6,9 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Outils.Helper.EnumTools;
 
-namespace ApplicationActrice
+namespace Outils.Controls
 {
     public static class NavigationItemExtension
     {
@@ -98,9 +97,9 @@ namespace ApplicationActrice
             return nodePanel;
         }
 
-        private Button BuildNodeHeader(Tuple<object, List<TItem>> key)
+        private System.Windows.Controls.Button BuildNodeHeader(Tuple<object, List<TItem>> key)
         {
-            var button = new Button
+            var button = new System.Windows.Controls.Button
             {
                 Content = $"{key.Item1} ({key.Item2.Count})",
                 HorizontalContentAlignment = HorizontalAlignment.Left,

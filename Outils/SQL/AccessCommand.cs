@@ -1,10 +1,13 @@
 ﻿using Outils.ObjectResultData;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Text;
 using Outils.Helper;
+using NLog;
 
 namespace Outils.SQL
 {
@@ -75,12 +78,13 @@ namespace Outils.SQL
 
             try
             {
-                Debug.WriteLine(Requete);
+                string requete = $"ExecuteReader : {_cmd.CommandText}, parram={GetParametersString(_cmd.Parameters)}";
+                Debug.WriteLine(requete);
                 accessReaderResult.Initialisation(_cmd.ExecuteReader());
             }
             catch (SqlException sqlException)
             {
-                _result.AddError(sqlException.Message);
+                _result.AddSqlException(sqlException);
             }
 
             return accessReaderResult;
@@ -90,12 +94,31 @@ namespace Outils.SQL
         {
             try
             {
+                string requete = $"ExecuteNonQuery : cmd={_cmd.CommandText}, parram={GetParametersString(_cmd.Parameters)}";
+                Debug.WriteLine(requete);
                 _cmd.ExecuteNonQuery();
             }
             catch (SqlException sqlException)
             {
-                _result.AddError(sqlException);
+                _result.AddSqlException(sqlException);
             }
+        }
+
+        public static string GetParametersString(SqlParameterCollection parameters)
+        {
+            var ps = new StringBuilder();
+
+            if (parameters == null)
+                ps.Append("null");
+            else
+            {
+                var items = new List<string>();
+                foreach (SqlParameter item in parameters)
+                    items.Add($"{item.ParameterName}={item.Value}");
+                ps.Append(string.Join(",", items));
+
+            }
+            return ps.ToString();
         }
 
         protected override void DisposeManagedResources()

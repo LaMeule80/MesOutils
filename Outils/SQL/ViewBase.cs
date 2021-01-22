@@ -2,7 +2,7 @@
 
 namespace Outils.SQL
 {
-    public abstract class ViewBase<TSelf> : IDataAccessDbDescriptionElementBase where TSelf : ViewBase<TSelf>, new()
+    public abstract class ViewBase<TSelf> where TSelf : ViewBase<TSelf>, new()
     {
         static ViewBase()
         {
