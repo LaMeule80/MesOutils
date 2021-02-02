@@ -46,16 +46,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xaml" />
     <Reference Include="Telerik.Windows.Controls">
-      <HintPath>..\..\Telerik\Telerik.Windows.Controls.dll</HintPath>
+      <HintPath>..\Telerik\Telerik.Windows.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Controls.Input">
-      <HintPath>..\..\Telerik\Telerik.Windows.Controls.Input.dll</HintPath>
+      <HintPath>..\Telerik\Telerik.Windows.Controls.Input.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Controls.Spreadsheet">
-      <HintPath>..\..\Telerik\Telerik.Windows.Controls.Spreadsheet.dll</HintPath>
+      <HintPath>..\Telerik\Telerik.Windows.Controls.Spreadsheet.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Diagrams.Core">
-      <HintPath>..\..\Telerik\Telerik.Windows.Diagrams.Core.dll</HintPath>
+      <HintPath>..\Telerik\Telerik.Windows.Diagrams.Core.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

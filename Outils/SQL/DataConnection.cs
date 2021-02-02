@@ -20,7 +20,7 @@ namespace Outils.SQL
             _repo = (ProcStoBase<TValue>)Activator.CreateInstance(typeof(Repo), Afficher);
         }
 
-        public ObjectResult Save(TValue value)
+        public ObjectResult Insert(TValue value)
         {
             return _repo.ExecuteNonQuery(value, TypeEnregistrement.Ajout);
         }
